@@ -105,7 +105,10 @@ async def startup():
     await load_state()
     await _tg_start_bot()
     log_activity("system", "سرور راه‌اندازی شد", "ok")
-    logger.info(f"X4G v9.5 started on port {CONFIG['port']}")
+    import os
+
+port = os.getenv("PORT") or CONFIG.get("port", 8000)
+logger.info(f"X4G v9.5 started on port {port}")
 
 
 @app.on_event("shutdown")
