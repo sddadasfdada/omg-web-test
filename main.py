@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 from datetime import datetime, timedelta
 
@@ -13,8 +14,10 @@ from fastapi.responses import (
     Response,
 )
 
+# Logger setup
+logger = logging.getLogger("uvicorn.error")
+
 # ── Shared state / helpers / persistence از state.py ─────────────────────────
-# (همه‌ی چیزهای اشتراکی اینجا زندگی می‌کنن تا چرخه‌ی import بین ماژول‌ها شکسته بشه)
 from state import (
     # constants & defaults
     CONFIG,
@@ -105,10 +108,10 @@ async def startup():
     await load_state()
     await _tg_start_bot()
     log_activity("system", "سرور راه‌اندازی شد", "ok")
-    import os
-
-port = os.getenv("PORT") or CONFIG.get("port", 8000)
-logger.info(f"X4G v9.5 started on port {port}")
+    
+    port = os.environ.get("PORT") or CONFIG.get("port", 8000)
+    CONFIG["port"] = port
+    logger.info(f"X4G v9.5 started on port {port}")
 
 
 @app.on_event("shutdown")
